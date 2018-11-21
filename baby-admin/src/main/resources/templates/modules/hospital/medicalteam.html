@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>医护团队管理</title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("hospital:medicalteam:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("hospital:medicalteam:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("hospital:medicalteam:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+
+			<a class="btn btn-primary" @click="reload"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-2 control-label">团队名称</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="medicalTeam.name" placeholder="团队名称"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">图片链接</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="medicalTeam.picUrl" placeholder="图片链接"/>
+                </div>
+            </div>
+                    <!--
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">创建时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="medicalTeam.createTime" placeholder="创建时间"/>
+                        </div>
+                    </div>
+                    -->
+<!--
+            <div class="form-group">
+                <div class="col-sm-2 control-label">
+                    团队类型：0管理，1医生，2护士，3其他
+                </div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control"
+                           v-model="medicalTeam.type"
+                           placeholder="团队类型：0管理，1医生，2护士，3其他"/>
+                </div>
+            </div>
+-->
+            <div class="form-group">
+                <div class="col-sm-2 control-label">团队类型</div>
+                <div class="col-sm-10">
+                    <select class="form-control" v-model="medicalTeam.type">
+                        <option value="0">管理</option>
+                        <option value="1">医生</option>
+                        <option value="2">护士</option>
+                        <option value="3">其他</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">所属科室</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" style="cursor:pointer;" v-model="medicalTeam.deptName"
+                           @click="deptTree" readonly="readonly" placeholder="所属科室"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 选择科室 -->
+<div id="deptLayer" style="display: none;padding:10px;">
+    <ul id="deptTree" class="ztree"></ul>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/hospital/medicalteam.js?_${.now?long}"></script>
+</body>
+</html>

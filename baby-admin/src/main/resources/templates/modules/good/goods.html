@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>商品管理</title>
+    <#include "/header.html">
+
+    <link rel="stylesheet" type="text/css" href="${request.contextPath}/statics/css/bootstrap-switch.min.css">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+            <#if shiro.hasPermission("good:goods:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+        </#if>
+        <#if shiro.hasPermission("good:goods:update")>
+        <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+    </#if>
+    <#if shiro.hasPermission("good:goods:delete")>
+    <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+</#if>
+
+<a class="btn btn-primary" @click="reload"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+</div>
+<table id="jqGrid"></table>
+<div id="jqGridPager"></div>
+</div>
+
+<div v-show="!showList" class="panel panel-default">
+    <div class="panel-heading">{{title}}</div>
+    <form class="form-horizontal">
+        <div class="form-group">
+            <div class="col-sm-2 control-label">商品名</div>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" v-model="goods.name" placeholder="商品名"/>
+            </div>
+        </div>
+        <!--
+        <div class="form-group">
+            <div class="col-sm-2 control-label">介绍</div>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" v-model="goods.intro" placeholder="介绍"/>
+            </div>
+        </div>
+        -->
+        <div class="form-group">
+            <div class="col-sm-2 control-label">日期</div>
+            <div class="col-sm-10">
+                <input  type="text" readonly class="form_datetime1 form-control" v-model="goods.intro"/>
+                {{goods.intro}}
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label">价格</div>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" v-model="goods.price" placeholder="价格"/>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-sm-2 control-label">数量</div>
+            <div class="col-sm-10">
+                <input type="text" class="form-control" v-model="goods.num" placeholder="数量"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label">数量</div>
+            <div class="col-sm-10">
+                <select class="form-control" name="" v-model="goods.num">
+                    <option value="0">选项 0</option>
+                    <option value="1">选项 1</option>
+                    <option value="2">选项 2</option>
+                    <option value="3">选项 3</option>
+                    <option value="4">选项 4</option>
+                </select>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label" >数量</div>
+            <label class="radio-inline">
+                <input type="radio" name="status" value="0" v-model="goods.num"/> 数量0
+            </label>
+            <label class="radio-inline">
+                <input type="radio" name="status" value="1" v-model="goods.num"/> 数量1
+            </label>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label">复选框</div>
+            <div class="col-sm-10">
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="optionid1" >optionid1
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="optionid2" >optionid2
+                </label>
+                <label class="checkbox-inline">
+                    <input type="checkbox" value="optionid3" >optionid3
+                </label>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-2 control-label">切换按钮</div>
+            <div class="col-sm-10">
+            <div class="switch" id="mySwitch">
+                <input type="checkbox" checked data-on-text="启用" data-off-text="禁用" />
+            </div>
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            <div class="col-sm-2 control-label"></div>
+            <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+            &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+        </div>
+    </form>
+</div>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/good/goods.js?_${.now?long}"></script>
+
+<script type="text/javascript" src="${request.contextPath}/statics/libs/bootstrap-switch.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        // $(".form_datetime1").datetimepicker({format: 'yyyy-mm-dd hh:ii', forceParse: true});
+        $(".form_datetime1").datetimepicker({format: 'yyyy-mm-dd',
+            forceParse: true,
+            weekStart: 1,
+            autoclose:true,
+            language:'zh-CN',
+            todayHighlight:true,
+            minView : 2
+        });
+        $('#mySwitch input').bootstrapSwitch({
+            onColor: "success",
+            offColor: "info",
+            size: "normal",
+            onSwitchChange: function (event, state) {
+                if (state == true) {
+                    alert('已打开');
+                } else {
+                    alert('已关闭');
+                }
+            }
+        })
+    })
+
+</script>
+
+<link rel="stylesheet" type="text/css" href="${request.contextPath}/statics/css/datetimepicker.css">
+<script type="text/javascript" src="${request.contextPath}/statics/libs/bootstrap-datetimepicker.min.js"></script>
+<script type="text/javascript" src="${request.contextPath}/statics/libs/bootstrap-datetimepicker.zh-CN.js"></script>
+</body>
+</html>

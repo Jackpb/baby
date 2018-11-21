@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>幕后团队管理</title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+            <#if shiro.hasPermission("hospital:scenesteam:save")>
+                <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+            </#if>
+            <#if shiro.hasPermission("hospital:scenesteam:update")>
+                <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+            </#if>
+            <#if shiro.hasPermission("hospital:scenesteam:delete")>
+                <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+            </#if>
+            <a class="btn btn-primary" @click="reload"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+            </div>
+                <table id="jqGrid"></table>
+                <div id="jqGridPager"></div>
+            </div>
+
+            <div v-show="!showList" class="panel panel-default">
+                <div class="panel-heading">{{title}}</div>
+                <form class="form-horizontal">
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">团队名称</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="scenesTeam.name" placeholder="团队名称"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label">团队介绍</div>
+                        <div class="col-sm-10">
+                            <input type="hidden" class="form-control" v-model="scenesTeam.introduce" placeholder="团队介绍"/>
+
+                            <div id="scenesTeam_editor" style="width:794px;height:340px;"></div>
+                            <script type="text/javascript">
+                                var ue = UE.getEditor('scenesTeam_editor', {
+                                    // enableAutoSave: false,//关闭本地自动保存
+                                    initialFrameHeight: 200,//初始化高度
+                                    // initialFrameWidth: 800,//初始化宽度
+                                    wordCount: false,//关闭字数统计
+                                    elementPathEnabled: false,//关闭显示元素路径
+                                    autoHeightEnabled: false,//关闭自动调节高度
+                                    autoFloatEnabled:false//关闭浮动
+                                });
+                            </script>
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-2 control-label"></div>
+                        <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                        &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+                    </div>
+                </form>
+            </div>
+    </div>
+
+    <script src="${request.contextPath}/statics/js/modules/hospital/scenesteam.js?_${.now?long}"></script>
+
+</body>
+</html>

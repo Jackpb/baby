@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>在线用户记录</title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("monitor:sysuseronline:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("monitor:sysuseronline:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("monitor:sysuseronline:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+            <#if shiro.hasPermission("monitor:sysoperlog:list")>
+            <a class="btn btn-primary" @click="reload"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+            </#if>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+														                    <div class="form-group">
+                        <div class="col-sm-2 control-label">用户会话id</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="sysUserOnline.sessionid" placeholder="用户会话id"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">登录账号</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="sysUserOnline.loginName" placeholder="登录账号"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">部门名称</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="sysUserOnline.deptName" placeholder="部门名称"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">登录IP地址</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="sysUserOnline.ipaddr" placeholder="登录IP地址"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">登录地点</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="sysUserOnline.loginLocation" placeholder="登录地点"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">浏览器类型</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="sysUserOnline.browser" placeholder="浏览器类型"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">操作系统</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="sysUserOnline.os" placeholder="操作系统"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">在线状态on_line在线off_line离线</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="sysUserOnline.status" placeholder="在线状态on_line在线off_line离线"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">session创建时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="sysUserOnline.startTimestamp" placeholder="session创建时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">session最后访问时间</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="sysUserOnline.lastAccessTime" placeholder="session最后访问时间"/>
+                        </div>
+                    </div>
+											                    <div class="form-group">
+                        <div class="col-sm-2 control-label">超时时间，单位为分钟</div>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" v-model="sysUserOnline.expireTime" placeholder="超时时间，单位为分钟"/>
+                        </div>
+                    </div>
+							            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/monitor/sysuseronline.js?_${.now?long}"></script>
+</body>
+</html>

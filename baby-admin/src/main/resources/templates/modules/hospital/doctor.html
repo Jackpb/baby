@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>医生管理</title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("hospital:doctor:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("hospital:doctor:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("hospital:doctor:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+
+			<a class="btn btn-primary" @click="reload"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-2 control-label">姓名</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="doctor.name" placeholder="姓名"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">简介</div>
+                <div class="col-sm-10">
+                    <input type="hidden" class="form-control" v-model="doctor.introduce" placeholder="简介"/>
+
+                    <div id="doctor_editor" style="width:794px;height:340px;"></div>
+                    <script type="text/javascript">
+                        var ue = UE.getEditor('doctor_editor', {
+                            // enableAutoSave: false,//关闭本地自动保存
+                            initialFrameHeight: 200,//初始化高度
+                            // initialFrameWidth: 800,//初始化宽度
+                            wordCount: false,//关闭字数统计
+                            elementPathEnabled: false,//关闭显示元素路径
+                            autoHeightEnabled: false,//关闭自动调节高度
+                            autoFloatEnabled:false//关闭浮动
+                        });
+                    </script>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">点赞数</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="doctor.clickRate" placeholder="点赞数"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">浏览量</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="doctor.viewRate" placeholder="浏览量"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">状态</div>
+                <div class="col-sm-10">
+                    <!—1、开关按钮-->
+                    <div class="switch" id="mySwitch">
+                        <input type="checkbox" checked/>
+                    </div>
+                    <!—2、开关值，用于后台交互-->
+                    <input type="hidden" id="switchValue" v-model="doctor.status"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">登录用户ID</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="doctor.userId" placeholder="登录用户ID"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">所属科室</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" style="cursor:pointer;" v-model="doctor.deptName"
+                           @click="deptTree" readonly="readonly" placeholder="所属科室"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">所属团队</div>
+                <div class="col-sm-10">
+                    <select class="form-control" v-model="doctor.teamId" placeholder="所属团队">
+                        <option v-for="mTeam in medicalTeams" :value="mTeam.id">{{mTeam.name}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">职称</div>
+                <div class="col-sm-10">
+                    <select class="form-control" v-model="doctor.titleId" placeholder="职称">
+                        <option v-for="tit in titles" :value="tit.id">{{tit.name}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 选择部门 -->
+<div id="deptLayer" style="display: none;padding:10px;">
+    <ul id="deptTree" class="ztree"></ul>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/hospital/doctor.js?_${.now?long}"></script>
+<script type="text/javascript">
+    $(function() {
+
+        $('#mySwitch input').bootstrapSwitch({
+            onColor: "success",
+            offColor: "danger",
+            onText: '正常',
+            offText: '禁用',
+            size: "normal",
+            state:false,
+            onSwitchChange: function (event, state) {
+                if (state == true) {
+                    vm.doctor.status =1;
+                } else {
+                    vm.doctor.status =0;
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>

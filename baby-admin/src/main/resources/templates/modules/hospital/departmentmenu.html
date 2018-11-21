@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("hospital:departmentmenu:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("hospital:departmentmenu:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("hospital:departmentmenu:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+
+			<a class="btn btn-primary" @click="reload"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-2 control-label">菜单名称</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="departmentMenu.name" placeholder="菜单名称"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">菜单启用</div>
+                <div class="col-sm-10">
+                    <div class="switch" id="myMenuIsSwitch">
+                        <input type="checkbox" checked data-on-text="是" data-off-text="否" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">菜单logo</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="departmentMenu.logo" placeholder="菜单logo"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">图片链接</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="departmentMenu.picUrl" placeholder="图片链接"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">排序</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="departmentMenu.sort" placeholder="排序"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">状态</div>
+                <div class="col-sm-10">
+                    <div class="switch" id="mySwitch">
+                        <input type="checkbox" checked data-on-text="启用" data-off-text="禁用" />
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">所属部门</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" style="cursor:pointer;" v-model="departmentMenu.deptName"
+                           @click="deptTree" readonly="readonly" placeholder="所属部门"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">宣教类型</div>
+                <div class="col-sm-10">
+                    <select class="form-control" v-model="departmentMenu.publicityId" placeholder="宣教类型">
+                        <option v-for="publicityType in publicityTypes" :value="publicityType.id">{{publicityType.name}}</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">所属类型ID</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="banner.publicityId" placeholder="所属类型ID"/>
+                </div>
+            </div>
+   <!--
+            <div class="form-group">
+                <div class="col-sm-2 control-label">创建时间</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="departmentMenu.createtime" placeholder="创建时间"/>
+                </div>
+            </div>
+            -->
+            <div class="form-group">
+                <div class="col-sm-2 control-label">父id</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="departmentMenu.pid" placeholder="父id"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- 选择部门 -->
+<div id="deptLayer" style="display: none;padding:10px;">
+    <ul id="deptTree" class="ztree"></ul>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/hospital/departmentmenu.js?_${.now?long}"></script>
+<script type="text/javascript">
+    $(function() {
+
+        $('#mySwitch input').bootstrapSwitch({
+            onColor: "success",
+            offColor: "info",
+            size: "normal",
+            onSwitchChange: function (event, state) {
+                if (state == true) {
+                    vm.departmentMenu.status=1;
+                    alert('启用状态');
+                } else {
+                    vm.departmentMenu.status =0;
+                    alert('禁用状态');
+                }
+            }
+        })
+
+        $('#myMenuIsSwitch input').bootstrapSwitch({
+            onColor: "success",
+            offColor: "info",
+            size: "normal",
+            onSwitchChange: function (event, state) {
+                if (state == true) {
+                    vm.departmentMenu.menuIs=1;
+                    alert('启用状态');
+                } else {
+                    vm.departmentMenu.menuIs =0;
+                    alert('禁用状态');
+                }
+            }
+        })
+    })
+</script>
+</body>
+</html>

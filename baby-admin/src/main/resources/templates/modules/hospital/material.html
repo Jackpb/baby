@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>素材管理</title>
+		<#include "/header.html">
+</head>
+<body>
+<div id="rrapp" v-cloak>
+    <div v-show="showList">
+        <div class="grid-btn">
+			<#if shiro.hasPermission("hospital:material:save")>
+            <a class="btn btn-primary" @click="add"><i class="fa fa-plus"></i>&nbsp;新增</a>
+			</#if>
+			<#if shiro.hasPermission("hospital:material:update")>
+            <a class="btn btn-primary" @click="update"><i class="fa fa-pencil-square-o"></i>&nbsp;修改</a>
+			</#if>
+			<#if shiro.hasPermission("hospital:material:delete")>
+            <a class="btn btn-primary" @click="del"><i class="fa fa-trash-o"></i>&nbsp;删除</a>
+			</#if>
+
+			<a class="btn btn-primary" @click="reload"><i class="fa fa-refresh"></i>&nbsp;刷新</a>
+        </div>
+        <table id="jqGrid"></table>
+        <div id="jqGridPager"></div>
+    </div>
+
+    <div v-show="!showList" class="panel panel-default">
+        <div class="panel-heading">{{title}}</div>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <div class="col-sm-2 control-label">名称</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="material.name" placeholder="名称"/>
+
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">文件地址</div>
+                <div class="col-sm-10">
+                    <input type="text" id="material_url" class="form-control" placeholder="文件地址" readonly/>
+                    <div id="uploader" class="wu-example">
+                        <!--用来存放文件信息-->
+                        <div id="thelist" class="uploader-list"></div>
+                        <div class="btns">
+                            <div id="picker">选择文件</div>
+                            <!--
+                            <div id="ctlBtn" class="btn btn-default">开始上传</div>
+                            -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">所属部门</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" style="cursor:pointer;" v-model="material.deptName" @click="deptTree" readonly="readonly" placeholder="所属部门"/>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <div class="col-sm-2 control-label">使用说明</div>
+                <div class="col-sm-10">
+                    <input type="text" class="form-control" v-model="material.comment" placeholder="使用说明"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label">状态</div>
+                <div class="col-sm-10">
+                    <!—1、开关按钮-->
+                    <div class="switch" id="mySwitch">
+                        <input type="checkbox" checked/>
+                    </div>
+                    <!—2、开关值，用于后台交互-->
+                    <input type="hidden" id="switchValue" v-model="material.state"/>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-sm-2 control-label"></div>
+                <input type="button" class="btn btn-primary" @click="saveOrUpdate" value="确定"/>
+                &nbsp;&nbsp;<input type="button" class="btn btn-warning" @click="reload" value="返回"/>
+            </div>
+        </form>
+    </div>
+</div>
+<!-- 选择部门 -->
+<div id="deptLayer" style="display: none;padding:10px;">
+    <ul id="deptTree" class="ztree"></ul>
+</div>
+
+<script src="${request.contextPath}/statics/js/modules/hospital/material.js?_${.now?long}"></script>
+<script src="${request.contextPath}/statics/js/initWebuploader.js"></script>
+<script>
+    function initWebuploadBtn() {
+        $('#picker div:eq(1)').attr('style','position: absolute; top: 0px; left: 0px; width: 82px; height: 39px; overflow: hidden; bottom: auto; right: auto;');
+    }
+    window.onload = function (ev) {
+        setTimeout("initWebuploadBtn()",1000);//延迟一秒执行，解决webuploader文件浏览按钮不可用的情况
+    }
+</script>
+</body>
+</html>
